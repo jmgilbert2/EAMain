@@ -114,20 +114,20 @@ void PrintManager::Startup(const char8_t* printServerAddress)
     EA::EAMain::SetReportFunction(EA::EAMain::Messages::Print);
     if (!printServerAddress)
     {
-        printServerAddress = MACRO_TO_STRING(EAMAIN_NETWORK_CHANNEL_IP);
+        printServerAddress = (const char8_t*)MACRO_TO_STRING(EAMAIN_NETWORK_CHANNEL_IP);
     }
     const char8_t* server = printServerAddress;
-    const char8_t* portStr = strchr(printServerAddress, ':');
+    const char8_t* portStr = (const char8_t*)strchr((const char*)printServerAddress, ':');
 
     int port = EAMAIN_NETWORK_CHANNEL_PORT;
     char8_t serverBuff[64] = { 0 };
     if (portStr != NULL)
     {
-        port = EA::StdC::AtoI32(portStr + 1);
-        server = EA::StdC::Strncpy(serverBuff, server, portStr - server);
+        port = EA::StdC::AtoI32((const char*)(portStr + 1));
+        server = (const char8_t*)EA::StdC::Strncpy((char*)serverBuff, (const char*)server, portStr - server);
     }
 
-    IChannel *networkChannel = Internal::CreateNetworkChannel(server, port);
+    IChannel *networkChannel = Internal::CreateNetworkChannel((const char*)server, port);
     if (networkChannel)
     {
         Add(CHANNEL_NETWORK, networkChannel);

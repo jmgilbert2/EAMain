@@ -15,7 +15,7 @@ namespace EAMain
 
 namespace Messages
 {
-    EAMAIN_API void Print(const char* pData);
+    EAMAIN_API void Print(const char8_t* pData);
 }}}
 
 #endif  // header include guard

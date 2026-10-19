@@ -172,21 +172,21 @@ namespace EA
             for(int i = 0; i < argc; i++)
             {
                 argv[i] = NULL;
-                const int requiredStrlen = EA::StdC::Strlcpy(argv[i], wargv[i], 0);
+                const int requiredStrlen = EA::StdC::Strlcpy((char*)argv[i], wargv[i], 0);
                 argv[i] = (char8_t *)_malloca(sizeof(char8_t) * (requiredStrlen + 1));
-                EA::StdC::Strlcpy(argv[i], wargv[i], requiredStrlen + 1);
+                EA::StdC::Strlcpy((char*)argv[i], wargv[i], requiredStrlen + 1);
             }
 
             #if defined(EAMAIN_USE_INITFINI)
                 EAMainInit();
             #endif
 
-            const char *printServerAddress = EA::EAMain::Internal::ExtractPrintServerAddress(argc, argv);
+            const char *printServerAddress = EA::EAMain::Internal::ExtractPrintServerAddress(argc, (char**)argv);
             EA::EAMain::Internal::EAMainStartup(printServerAddress);
 
             EA::EAMain::InitializeSignalHandler();
 
-            returnValue = EA::EAMain::Internal::gEAMainFunction(argc, argv);
+            returnValue = EA::EAMain::Internal::gEAMainFunction(argc, (char**)argv);
             EA::EAMain::Internal::EAMainShutdown(returnValue);
 
             #if defined(EAMAIN_USE_INITFINI)
@@ -225,21 +225,21 @@ namespace EA
             for(int i = 0; i < argc; i++)
             {
                 argv[i] = NULL;
-                const int requiredStrlen = EA::StdC::Strlcpy(argv[i], wargv[i], 0);
-                argv[i] = (char8_t)_malloca(sizeof(char8_t) * (requiredStrlen + 1));
-                EA::StdC::Strlcpy(argv[i], wargv[i], requiredStrlen + 1);
+                const int requiredStrlen = EA::StdC::Strlcpy((char*)argv[i], wargv[i], 0);
+                argv[i] = (char8_t*)_malloca(sizeof(char8_t) * (requiredStrlen + 1));
+                EA::StdC::Strlcpy((char*)argv[i], wargv[i], requiredStrlen + 1);
             }
 
             #if defined(EAMAIN_USE_INITFINI)
                 EAMainInit();
             #endif
 
-            const char *printServerAddress = EA::EAMain::Internal::ExtractPrintServerAddress(argc, argv);
+            const char *printServerAddress = EA::EAMain::Internal::ExtractPrintServerAddress(argc, (char**)argv);
             EA::EAMain::Internal::EAMainStartup(printServerAddress);
 
             EA::EAMain::InitializeSignalHandler();
 
-            int returnValue = EA::EAMain::Internal::gEAMainFunction(argc, argv);
+            int returnValue = EA::EAMain::Internal::gEAMainFunction(argc, (char**)argv);
             EA::EAMain::Internal::EAMainShutdown(returnValue);
 
             #if defined(EAMAIN_USE_INITFINI)

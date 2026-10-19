@@ -44,14 +44,14 @@ namespace EA
             #if EAMAIN_HAVE_UNHANDLED_EXCEPTION_FILTER
                 static LONG WINAPI EAMainUnhandledExceptionFilter(LPEXCEPTION_POINTERS exception)
                 {
-                    EA::EAMain::Report("\n");
-                    EA::EAMain::Report("===============================================================================\n");
-                    EA::EAMain::Report("ATTENTION ATTENTION ATTENTION ATTENTION ATTENTION ATTENTION ATTENTION ATTENTION\n");
-                    EA::EAMain::Report("An unhandled exception has been detected. This likely means the application is \n");
-                    EA::EAMain::Report("crashing.\n\n");
-                    EA::EAMain::Report("(This message is courtesy of EAMain but does not mean that EAMain is\n");
-                    EA::EAMain::Report("the cause of the crash.)\n");
-                    EA::EAMain::Report("===============================================================================\n");
+                    EA::EAMain::Report(EA_CHAR8("\n"));
+                    EA::EAMain::Report(EA_CHAR8("===============================================================================\n"));
+                    EA::EAMain::Report(EA_CHAR8("ATTENTION ATTENTION ATTENTION ATTENTION ATTENTION ATTENTION ATTENTION ATTENTION\n"));
+                    EA::EAMain::Report(EA_CHAR8("An unhandled exception has been detected. This likely means the application is \n"));
+                    EA::EAMain::Report(EA_CHAR8("crashing.\n\n"));
+                    EA::EAMain::Report(EA_CHAR8("(This message is courtesy of EAMain but does not mean that EAMain is\n"));
+                    EA::EAMain::Report(EA_CHAR8("the cause of the crash.)\n"));
+                    EA::EAMain::Report(EA_CHAR8("===============================================================================\n"));
 
                     #if EAMAIN_MINIDUMP_SUPPORTED
                         char8_t szPath[MAX_PATH];
@@ -102,7 +102,7 @@ namespace EA
                 }
             #endif
 
-            void EAMainStartup(const char8_t* printServerAddress)
+            void EAMainStartup(const char* printServerAddress)
             {
                 static bool sEAMainShutdown_StartupHandled = false;
                 if(!sEAMainShutdown_StartupHandled)
@@ -119,7 +119,7 @@ namespace EA
 
                     // Startup the print manager
                     //
-                    EA::EAMain::PrintManager::Instance().Startup(printServerAddress);
+                    EA::EAMain::PrintManager::Instance().Startup((const char8_t*)printServerAddress);
                 }
             }
 
@@ -147,7 +147,7 @@ namespace EA
 
                     // Required so the EAMainPrintServer can terminate with the correct error code.
                     //
-                    EA::EAMain::Report("\nRETURNCODE=%d\n", errorCount);
+                    EA::EAMain::Report(EA_CHAR8("\nRETURNCODE=%d\n"), errorCount);
 
                     // Shutdown the EAMain print manager.
                     //
