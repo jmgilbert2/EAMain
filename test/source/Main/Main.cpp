@@ -40,8 +40,8 @@ static int TestCommandLineArgs()
 {
     using namespace EA::EAMain;
 
-    #define EAMAIN_TEST(x) if (!(x)) { Report("%s(%d): %s\n", __FILE__, __LINE__, #x); ++nErrorCount; } else (void)0
-    #define EAMAIN_TEST_FATAL(x) if (!(x)) { Report("%s(%d): %s\n", __FILE__, __LINE__, #x); ++nErrorCount; return nErrorCount; } else (void)0
+    #define EAMAIN_TEST(x) if (!(x)) { Report(EA_CHAR8("%s(%d): %s\n"), __FILE__, __LINE__, #x); ++nErrorCount; } else (void)0
+    #define EAMAIN_TEST_FATAL(x) if (!(x)) { Report(EA_CHAR8("%s(%d): %s\n"), __FILE__, __LINE__, #x); ++nErrorCount; return nErrorCount; } else (void)0
 
     int nErrorCount = 0;
 
@@ -226,12 +226,12 @@ int EAMain(int argc, char** argv)
 
     int nErrorCount(0);
 
-    Report("List of arguments passed:\n");
+    Report(EA_CHAR8("List of arguments passed:\n"));
     for (int i = 0; i < argc; ++i)
     {
-        Report("Arg %d: %s\n", i, argv[i]);
+        Report(EA_CHAR8("Arg %d: %s\n"), i, argv[i]);
     }
-    Report("\n");
+    Report(EA_CHAR8("\n"));
 
     // Basic test of redirection of stdout/stderr on platforms that support
     // redirection of these streams.
@@ -242,8 +242,8 @@ int EAMain(int argc, char** argv)
     fprintf(stderr, "fprintf(stderr, ...)\n");
     fflush(stderr);
 
-    Report("Test of %s.\n", "Report()");
-    Report("Report()\n");
+    Report(EA_CHAR8("Test of %s.\n"), "Report()");
+    Report(EA_CHAR8("Report()\n"));
 
     bool bArgPassed = false;
 
@@ -260,24 +260,24 @@ int EAMain(int argc, char** argv)
 #if !defined(EA_PLATFORM_WINDOWS_PHONE)
     if (!bArgPassed)
     {
-        Report("Arg not passed!\n");
+        Report(EA_CHAR8("Arg not passed!\n"));
         ++nErrorCount;
     }
 #endif
 
     if (TestCommandLineArgs() != 0)
     {
-        Report("Error parsing command line arguments!\n");
+        Report(EA_CHAR8("Error parsing command line arguments!\n"));
         ++nErrorCount;
     }
 
     if (!gEAMainInitCalled)
     {
-        Report("EAMainInit was not called!\n");
+        Report(EA_CHAR8("EAMainInit was not called!\n"));
         ++nErrorCount;
     }
 
-    Report("This report statement has \nno terminating newline");
+    Report(EA_CHAR8("This report statement has \nno terminating newline"));
 
     return nErrorCount;
 }
