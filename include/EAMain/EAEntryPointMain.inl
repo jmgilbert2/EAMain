@@ -128,6 +128,15 @@ namespace EA
     #pragma comment(lib, "shell32.lib")
     #pragma warning(pop)
 
+    #if defined(UNICODE)
+        #if !defined(EA_MAIN_16)
+            #define EA_MAIN_16
+        #endif
+        #if !defined(EAMAIN_MAIN_16)
+            #define EAMAIN_MAIN_16
+        #endif
+    #endif
+
     int main(int argc, char** argv)
     {
         // To do: Some platforms may require reading the command line from a file.
