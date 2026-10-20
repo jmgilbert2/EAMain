@@ -212,7 +212,7 @@ namespace EA
 
         if(wargv)
         {
-            char8_t** argv = (char8_t**)_malloca(argc * sizeof(char8_t*));
+            char8_t** argv = (char8_t**)_malloca((argc + 1) * sizeof(char8_t*));
             __analysis_assume(argv != NULL);
 
             for(int i = 0; i < argc; i++)
@@ -222,6 +222,7 @@ namespace EA
                 argv[i] = (char8_t *)_malloca(sizeof(char8_t) * (requiredStrlen + 1));
                 EA::StdC::Strlcpy((char*)argv[i], wargv[i], requiredStrlen + 1);
             }
+            argv[argc] = NULL;
 
             #if defined(EAMAIN_USE_INITFINI)
                 EAMainInit();
