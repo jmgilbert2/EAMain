@@ -128,6 +128,51 @@ namespace EA
     #pragma comment(lib, "shell32.lib")
     #pragma warning(pop)
 
+    #if defined(UNICODE)
+        #if !defined(EA_MAIN_16)
+            #define EA_MAIN_16
+        #endif
+        #if !defined(EAMAIN_MAIN_16)
+            #define EAMAIN_MAIN_16
+        #endif
+    #endif
+
+    #if defined(EA_MAIN_16)
+        int wmain(int argc, wchar_t** wargv)
+        {
+            EA::EAMain::Internal::gEAMainFunction = ::EAMain;
+
+            // Allocate and convert-copy wargv to argv. Like the argv of main, it ends with a NULL pointer.
+            char8_t** argv = (char8_t**)_malloca((argc + 1) * sizeof(char8_t*));
+
+            for(int i = 0; i < argc; i++)
+            {
+                argv[i] = NULL;
+                const int requiredStrlen = EA::StdC::Strlcpy((char*)argv[i], wargv[i], 0);
+                argv[i] = (char8_t*)_malloca(sizeof(char8_t) * (requiredStrlen + 1));
+                EA::StdC::Strlcpy((char*)argv[i], wargv[i], requiredStrlen + 1);
+            }
+            argv[argc] = NULL;
+
+            #if defined(EAMAIN_USE_INITFINI)
+                EAMainInit();
+            #endif
+
+            const char *printServerAddress = EA::EAMain::Internal::ExtractPrintServerAddress(argc, (char**)argv);
+            EA::EAMain::Internal::EAMainStartup(printServerAddress);
+
+            EA::EAMain::InitializeSignalHandler();
+
+            int returnValue = EA::EAMain::Internal::gEAMainFunction(argc, (char**)argv);
+            EA::EAMain::Internal::EAMainShutdown(returnValue);
+
+            #if defined(EAMAIN_USE_INITFINI)
+                EAMainFini();
+            #endif
+
+            return returnValue;
+        }
+    #else
     int main(int argc, char** argv)
     {
         // To do: Some platforms may require reading the command line from a file.
@@ -155,6 +200,7 @@ namespace EA
     #endif
         return returnValue;
     }
+    #endif
 
     int WINAPI wWinMainShared(HINSTANCE /*instance*/, HINSTANCE /*prevInstance*/, LPWSTR wCmdLine, int /*cmdShow*/)
     {
@@ -166,7 +212,7 @@ namespace EA
 
         if(wargv)
         {
-            char8_t** argv = (char8_t**)_malloca(argc * sizeof(char8_t*));
+            char8_t** argv = (char8_t**)_malloca((argc + 1) * sizeof(char8_t*));
             __analysis_assume(argv != NULL);
 
             for(int i = 0; i < argc; i++)
@@ -176,6 +222,7 @@ namespace EA
                 argv[i] = (char8_t *)_malloca(sizeof(char8_t) * (requiredStrlen + 1));
                 EA::StdC::Strlcpy((char*)argv[i], wargv[i], requiredStrlen + 1);
             }
+            argv[argc] = NULL;
 
             #if defined(EAMAIN_USE_INITFINI)
                 EAMainInit();
@@ -214,48 +261,12 @@ namespace EA
         }
     #endif
 #else
-    #if defined(EA_PLATFORM_WINDOWS) && defined(EA_MAIN_16)
-        int wmain(int argc, wchar_t** wargv)
-        {
-            EA::EAMain::Internal::gEAMainFunction = ::EAMain;
-
-            // Allocate and convert-copy wargv to argv.
-            char8_t** argv = (char8_t**)_malloca(argc * sizeof(char8_t*));
-
-            for(int i = 0; i < argc; i++)
-            {
-                argv[i] = NULL;
-                const int requiredStrlen = EA::StdC::Strlcpy((char*)argv[i], wargv[i], 0);
-                argv[i] = (char8_t*)_malloca(sizeof(char8_t) * (requiredStrlen + 1));
-                EA::StdC::Strlcpy((char*)argv[i], wargv[i], requiredStrlen + 1);
-            }
-
-            #if defined(EAMAIN_USE_INITFINI)
-                EAMainInit();
-            #endif
-
-            const char *printServerAddress = EA::EAMain::Internal::ExtractPrintServerAddress(argc, (char**)argv);
-            EA::EAMain::Internal::EAMainStartup(printServerAddress);
-
-            EA::EAMain::InitializeSignalHandler();
-
-            int returnValue = EA::EAMain::Internal::gEAMainFunction(argc, (char**)argv);
-            EA::EAMain::Internal::EAMainShutdown(returnValue);
-
-            #if defined(EAMAIN_USE_INITFINI)
-                EAMainFini();
-            #endif
-
-            return returnValue;
-        }
-    #else
         #if !defined(EAMAIN_FORCE_MAIN_USAGE) // If the user defines EAMAIN_FORCE_MAIN_USAGE before #including this file, then main is used even if we don't normally use it for the given platform.
             #if defined(EA_PLATFORM_IPHONE)
                 #define main iosMain
                 extern "C" int iosMain(int argc, char** argv);
             #endif
         #endif
-    #endif
 
     int main(int argc, char** argv)
     {
