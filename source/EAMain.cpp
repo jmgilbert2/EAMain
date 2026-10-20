@@ -192,7 +192,7 @@ namespace EA
                 else
                 {
                     #if defined(EA_PLATFORM_MICROSOFT) && !defined(CS_UNDEFINED_STRING) // No need to do this for Microsoft console platforms, as the fputs below covers that.
-                        OutputDebugStringA(pMessage);
+                        OutputDebugStringA((const char*)pMessage);
                     #endif
 
                     #if defined(EA_PLATFORM_ANDROID)
@@ -207,7 +207,7 @@ namespace EA
                         // EASprintfCore.cpp code for example loop code.
                         AndroidReport(pMessage);
                     #else
-                        fputs(pMessage, stdout);
+                        fputs((const char*)pMessage, stdout);
                         fflush(stdout);
                     #endif
                 }
@@ -283,7 +283,7 @@ namespace EA
                     va_copy(argumentsSaved, arguments);
                 #endif
 
-                const int nReturnValue = EA::StdC::Vsnprintf(buffer, kBufferSize, pFormat, arguments);
+                const int nReturnValue = EA::StdC::Vsnprintf(buffer, kBufferSize, (const char*)pFormat, arguments);
 
                 if(!pReportFunction)
                     pReportFunction = gpReportFunction;
@@ -291,10 +291,10 @@ namespace EA
                 if(pReportFunction)
                 {
                     if((nReturnValue >= 0) && (nReturnValue < (int)kBufferSize))
-                        pReportFunction(buffer);
+                        pReportFunction((const char8_t*)buffer);
                     else if(nReturnValue < 0) // If we simply didn't have enough buffer space.
                     {
-                        pReportFunction("Invalid format specified.\n    Format: ");
+                        pReportFunction(EA_CHAR8("Invalid format specified.\n    Format: "));
                         pReportFunction(pFormat);
                     }
                     else // Else we simply didn't have enough buffer space.
@@ -308,12 +308,12 @@ namespace EA
                                 va_copy(arguments, argumentsSaved);
                             #endif
 
-                            EA::StdC::Vsnprintf(pBuffer, nReturnValue + 1, pFormat, arguments);
-                            pReportFunction(pBuffer);
+                            EA::StdC::Vsnprintf(pBuffer, nReturnValue + 1, (const char*)pFormat, arguments);
+                            pReportFunction((const char8_t*)pBuffer);
                             free(pBuffer);
                         }
                         else
-                            pReportFunction("Unable to allocate buffer space for large printf.\n");
+                            pReportFunction(EA_CHAR8("Unable to allocate buffer space for large printf.\n"));
                     }
                 }
 
