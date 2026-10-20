@@ -42,7 +42,7 @@ void FileChannel::Init()
 void FileChannel::Send(const char8_t* pData)
 {
     EA_ASSERT_MSG(mFileHandle, "invalid file handle");
-    fputs(pData, mFileHandle);
+    fputs((const char*)pData, mFileHandle);
 }
 
 //------------------------------------------------------------

@@ -43,7 +43,7 @@ namespace EA {
         void Exit(int exitcode)
         {
             int index = (exitcode < 0 || exitcode >= ExitCode_Max) ? exitcode = ExitCode_Unknown : exitcode;
-            Report("======================================================================\nEA::Main::Exit called with exitcode %d (%s)!\nThe caller wanted to immediately end execution!\n======================================================================\n", exitcode, gExitCodeNames[index]);
+            Report(EA_CHAR8("======================================================================\nEA::Main::Exit called with exitcode %d (%s)!\nThe caller wanted to immediately end execution!\n======================================================================\n"), exitcode, gExitCodeNames[index]);
 #if !defined(EA_PLATFORM_ANDROID)
             Internal::EAMainShutdown(exitcode);
             std::exit(exitcode);

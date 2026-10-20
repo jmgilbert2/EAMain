@@ -15,7 +15,7 @@ namespace EAMain
 
 namespace Messages
 {
-    void Print(const char* pData)
+    void Print(const char8_t* pData)
     {
         PrintManager::Instance().Send(pData);
     }
