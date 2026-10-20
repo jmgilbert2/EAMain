@@ -142,8 +142,8 @@ namespace EA
         {
             EA::EAMain::Internal::gEAMainFunction = ::EAMain;
 
-            // Allocate and convert-copy wargv to argv.
-            char8_t** argv = (char8_t**)_malloca(argc * sizeof(char8_t*));
+            // Allocate and convert-copy wargv to argv. Like the argv of main, it ends with a NULL pointer.
+            char8_t** argv = (char8_t**)_malloca((argc + 1) * sizeof(char8_t*));
 
             for(int i = 0; i < argc; i++)
             {
@@ -152,6 +152,7 @@ namespace EA
                 argv[i] = (char8_t*)_malloca(sizeof(char8_t) * (requiredStrlen + 1));
                 EA::StdC::Strlcpy((char*)argv[i], wargv[i], requiredStrlen + 1);
             }
+            argv[argc] = NULL;
 
             #if defined(EAMAIN_USE_INITFINI)
                 EAMainInit();
