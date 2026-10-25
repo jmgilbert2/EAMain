@@ -169,11 +169,11 @@ namespace EA
             void NetworkChannel::Send(const char8_t *data)
             {
                 char *buffer = const_cast<char *>(data);
-                ssize_t bufferLength = static_cast<ssize_t>(strlen(buffer));
-                ssize_t bytesSent = 0;
+                ptrdiff_t bufferLength = static_cast<ptrdiff_t>(strlen(buffer));
+                ptrdiff_t bytesSent = 0;
                 while (bytesSent < bufferLength)
                 {
-                    ssize_t result = send(m_socket, buffer + bytesSent, static_cast<int>(bufferLength - bytesSent), 0);
+                    ptrdiff_t result = send(m_socket, buffer + bytesSent, static_cast<int>(bufferLength - bytesSent), 0);
 
                     if (result == SOCKET_ERROR)
                     {
@@ -225,7 +225,7 @@ namespace EA
 
                 for (;;)
                 {
-                    ssize_t rv = recv(m_socket, buffer, (int)sizeof buffer, 0);
+                    ptrdiff_t rv = recv(m_socket, buffer, (int)sizeof buffer, 0);
 
                     if (rv <= 0)
                     {
